@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>XSTEER Example</title>
+        <style>
+            body {
+                font: 12px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+            }
+            span {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <form>
+            Keyword: <input type='text' id='keyword' />
+            <input type='submit' value='Submit' />
+        </form>
+        <div id='info' style='display:none'>
+            <div>Orientation: <span id='orientation'>Landscape</span></div>
+            <div>Acceleration: <span id='acceleration'>0, 0, 0</span></div>
+        </div>
+        <script src='http://xsteer.com/xsteer.js'></script>
+        <script>
+            document.getElementsByTagName( 'form' )[ 0 ].onsubmit = function() {
+                xsteer.connect( document.getElementById( 'keyword' ).value, function( controller ) {
+                    document.getElementsByTagName( 'form' )[ 0 ].style.display = 'none';
+                    document.getElementById( 'info' ).style.display = 'block';
+
+                    controller.on( 'accelerated', function( x, y, z ) {
+                        document.getElementById( 'acceleration' ).innerHTML = x + ', ' + y + ', ' + z;
+                    } );
+                    controller.on( 'rotated', function( x, y, z ) {
+                        console.log( 'Rotation: ' + x + ', ' + y + ', ' + z );
+                    } );
+                    controller.on( 'oriented', function( orientation ) {
+                        document.getElementById( 'orientation' ).innerHTML = orientation;
+                    } );
+                    controller.on( 'shake', function() {
+                    } );
+                    controller.on( 'touchStart', function() {
+                        console.log( 'touchStart' );
+                    } );
+                    setInterval( function() {
+                        // console.log( controller.orientation() );
+                    }, 100 );
+                }, function() {
+                    console.log( 'Failed' );
+                } );
+                return false;
+            };
+            document.getElementsByTagName( 'input' )[ 0 ].focus();
+        </script>
+    </body>
+</html>
